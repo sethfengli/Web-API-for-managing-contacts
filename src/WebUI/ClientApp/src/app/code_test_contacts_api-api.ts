@@ -14,7 +14,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
-export interface IContactListsClient {
+export interface IContactsClient {
     get(): Observable<ContactVm>;
     create(command: CreateContactCommand): Observable<number>;
     get2(id: number): Observable<FileResponse>;
@@ -25,7 +25,7 @@ export interface IContactListsClient {
 @Injectable({
     providedIn: 'root'
 })
-export class ContactListsClient implements IContactListsClient {
+export class ContactsClient implements IContactsClient {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -36,7 +36,7 @@ export class ContactListsClient implements IContactListsClient {
     }
 
     get(): Observable<ContactVm> {
-        let url_ = this.baseUrl + "/api/ContactLists";
+        let url_ = this.baseUrl + "/api/Contacts";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -84,7 +84,7 @@ export class ContactListsClient implements IContactListsClient {
     }
 
     create(command: CreateContactCommand): Observable<number> {
-        let url_ = this.baseUrl + "/api/ContactLists";
+        let url_ = this.baseUrl + "/api/Contacts";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -136,7 +136,7 @@ export class ContactListsClient implements IContactListsClient {
     }
 
     get2(id: number): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/ContactLists/{id}";
+        let url_ = this.baseUrl + "/api/Contacts/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
@@ -185,7 +185,7 @@ export class ContactListsClient implements IContactListsClient {
     }
 
     update(id: number, command: UpdateContactCommand): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/ContactLists/{id}";
+        let url_ = this.baseUrl + "/api/Contacts/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
@@ -238,7 +238,7 @@ export class ContactListsClient implements IContactListsClient {
     }
 
     delete(id: number): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/ContactLists/{id}";
+        let url_ = this.baseUrl + "/api/Contacts/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id)); 
@@ -1016,8 +1016,6 @@ export class CreateContactCommand implements ICreateContactCommand {
     note?: string | undefined;
     sex?: Gender;
     dateOfBirth?: Date | undefined;
-    phones?: Phone[] | undefined;
-    emails?: Email[] | undefined;
 
     constructor(data?: ICreateContactCommand) {
         if (data) {
@@ -1036,16 +1034,6 @@ export class CreateContactCommand implements ICreateContactCommand {
             this.note = _data["note"];
             this.sex = _data["sex"];
             this.dateOfBirth = _data["dateOfBirth"] ? new Date(_data["dateOfBirth"].toString()) : <any>undefined;
-            if (Array.isArray(_data["phones"])) {
-                this.phones = [] as any;
-                for (let item of _data["phones"])
-                    this.phones!.push(Phone.fromJS(item));
-            }
-            if (Array.isArray(_data["emails"])) {
-                this.emails = [] as any;
-                for (let item of _data["emails"])
-                    this.emails!.push(Email.fromJS(item));
-            }
         }
     }
 
@@ -1064,16 +1052,6 @@ export class CreateContactCommand implements ICreateContactCommand {
         data["note"] = this.note;
         data["sex"] = this.sex;
         data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : <any>undefined;
-        if (Array.isArray(this.phones)) {
-            data["phones"] = [];
-            for (let item of this.phones)
-                data["phones"].push(item.toJSON());
-        }
-        if (Array.isArray(this.emails)) {
-            data["emails"] = [];
-            for (let item of this.emails)
-                data["emails"].push(item.toJSON());
-        }
         return data; 
     }
 }
@@ -1085,231 +1063,12 @@ export interface ICreateContactCommand {
     note?: string | undefined;
     sex?: Gender;
     dateOfBirth?: Date | undefined;
-    phones?: Phone[] | undefined;
-    emails?: Email[] | undefined;
 }
 
 export enum Gender {
     Female = 0,
     Male = 1,
     Genderqueer = 2,
-}
-
-export abstract class AuditableEntity implements IAuditableEntity {
-    createdBy?: string | undefined;
-    created?: Date;
-    lastModifiedBy?: string | undefined;
-    lastModified?: Date | undefined;
-
-    constructor(data?: IAuditableEntity) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.createdBy = _data["createdBy"];
-            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
-            this.lastModifiedBy = _data["lastModifiedBy"];
-            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): AuditableEntity {
-        data = typeof data === 'object' ? data : {};
-        throw new Error("The abstract class 'AuditableEntity' cannot be instantiated.");
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["createdBy"] = this.createdBy;
-        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
-        data["lastModifiedBy"] = this.lastModifiedBy;
-        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
-        return data; 
-    }
-}
-
-export interface IAuditableEntity {
-    createdBy?: string | undefined;
-    created?: Date;
-    lastModifiedBy?: string | undefined;
-    lastModified?: Date | undefined;
-}
-
-export class Phone extends AuditableEntity implements IPhone {
-    id?: number;
-    phoneNumber?: string | undefined;
-    contactId?: number;
-    person?: Contact | undefined;
-
-    constructor(data?: IPhone) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.id = _data["id"];
-            this.phoneNumber = _data["phoneNumber"];
-            this.contactId = _data["contactId"];
-            this.person = _data["person"] ? Contact.fromJS(_data["person"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): Phone {
-        data = typeof data === 'object' ? data : {};
-        let result = new Phone();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["phoneNumber"] = this.phoneNumber;
-        data["contactId"] = this.contactId;
-        data["person"] = this.person ? this.person.toJSON() : <any>undefined;
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IPhone extends IAuditableEntity {
-    id?: number;
-    phoneNumber?: string | undefined;
-    contactId?: number;
-    person?: Contact | undefined;
-}
-
-export class Contact extends AuditableEntity implements IContact {
-    id?: number;
-    title?: string | undefined;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    note?: string | undefined;
-    sex?: Gender;
-    dateOfBirth?: Date | undefined;
-    phones?: Phone[] | undefined;
-    emails?: Email[] | undefined;
-
-    constructor(data?: IContact) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.id = _data["id"];
-            this.title = _data["title"];
-            this.firstName = _data["firstName"];
-            this.lastName = _data["lastName"];
-            this.note = _data["note"];
-            this.sex = _data["sex"];
-            this.dateOfBirth = _data["dateOfBirth"] ? new Date(_data["dateOfBirth"].toString()) : <any>undefined;
-            if (Array.isArray(_data["phones"])) {
-                this.phones = [] as any;
-                for (let item of _data["phones"])
-                    this.phones!.push(Phone.fromJS(item));
-            }
-            if (Array.isArray(_data["emails"])) {
-                this.emails = [] as any;
-                for (let item of _data["emails"])
-                    this.emails!.push(Email.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): Contact {
-        data = typeof data === 'object' ? data : {};
-        let result = new Contact();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["title"] = this.title;
-        data["firstName"] = this.firstName;
-        data["lastName"] = this.lastName;
-        data["note"] = this.note;
-        data["sex"] = this.sex;
-        data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : <any>undefined;
-        if (Array.isArray(this.phones)) {
-            data["phones"] = [];
-            for (let item of this.phones)
-                data["phones"].push(item.toJSON());
-        }
-        if (Array.isArray(this.emails)) {
-            data["emails"] = [];
-            for (let item of this.emails)
-                data["emails"].push(item.toJSON());
-        }
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IContact extends IAuditableEntity {
-    id?: number;
-    title?: string | undefined;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    note?: string | undefined;
-    sex?: Gender;
-    dateOfBirth?: Date | undefined;
-    phones?: Phone[] | undefined;
-    emails?: Email[] | undefined;
-}
-
-export class Email extends AuditableEntity implements IEmail {
-    id?: number;
-    emailAddress?: string | undefined;
-    contactId?: number;
-    person?: Contact | undefined;
-
-    constructor(data?: IEmail) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.id = _data["id"];
-            this.emailAddress = _data["emailAddress"];
-            this.contactId = _data["contactId"];
-            this.person = _data["person"] ? Contact.fromJS(_data["person"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): Email {
-        data = typeof data === 'object' ? data : {};
-        let result = new Email();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["emailAddress"] = this.emailAddress;
-        data["contactId"] = this.contactId;
-        data["person"] = this.person ? this.person.toJSON() : <any>undefined;
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IEmail extends IAuditableEntity {
-    id?: number;
-    emailAddress?: string | undefined;
-    contactId?: number;
-    person?: Contact | undefined;
 }
 
 export class UpdateContactCommand implements IUpdateContactCommand {

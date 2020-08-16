@@ -6,11 +6,11 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace code_test_contacts_api.Application.IntegrationTests.TodoLists.Commands
+namespace code_test_contacts_api.Application.IntegrationTests.Contact.Commands
 {
     using static Testing;
 
-    public class DeleteTodoListTests : TestBase
+    public class DeleteContactTests : TestBase
     {
         [Test]
         public void ShouldRequireValidTodoListId()
@@ -24,19 +24,22 @@ namespace code_test_contacts_api.Application.IntegrationTests.TodoLists.Commands
         [Test]
         public async Task ShouldDeleteTodoList()
         {
-            var listId = await SendAsync(new CreateContactCommand
+            var contactId = await SendAsync(new CreateContactCommand
             {
-                Title = "New List"
+                Title = "Dr",
+                FirstName = "Bat",
+                LastName = "Man",
+              
             });
 
             await SendAsync(new DeleteContactCommand 
             { 
-                Id = listId 
+                Id = contactId 
             });
 
-            var list = await FindAsync<Domain.Entities.Contact>(listId);
+            var contact = await FindAsync<Domain.Entities.Contact>(contactId);
 
-            list.Should().BeNull();
+            contact.Should().BeNull();
         }
     }
 }

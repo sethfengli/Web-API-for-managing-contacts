@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace code_test_contacts_api.WebUI.Controllers
 {
-    public class ContactListsController : ApiController
+    public class ContactsController : ApiController
     {
+       
         [HttpGet]
         public async Task<ActionResult<ContactVm>> Get()
         {
@@ -17,7 +18,7 @@ namespace code_test_contacts_api.WebUI.Controllers
         [HttpGet("{id}")]
         public async Task<FileResult> Get(int id)
         {
-            var vm = await Mediator.Send(new ExportContactsQuery { Id = id});
+            var vm = await Mediator.Send(new ExportContactsQuery { Id = id });
 
             return File(vm.Content, vm.ContentType, vm.FileName);
         }
@@ -50,3 +51,4 @@ namespace code_test_contacts_api.WebUI.Controllers
         }
     }
 }
+

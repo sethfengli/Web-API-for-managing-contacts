@@ -4,15 +4,16 @@ using code_test_contacts_api.Domain.Entities;
 using FluentAssertions;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using code_test_contacts_api.Application.Contact.Commands;
 
-namespace code_test_contacts_api.Application.IntegrationTests.TodoItems.Commands
+namespace code_test_contacts_api.Application.IntegrationTests.Phones.Commands
 {
     using static Testing;
 
-    public class DeleteTodoItemTests : TestBase
+    public class DeletePhoneItemTests : TestBase
     {
         [Test]
-        public void ShouldRequireValidTodoItemId()
+        public void ShouldRequireValidPhone()
         {
             var command = new DeletePhoneCommand { Id = 99 };
 
@@ -21,17 +22,20 @@ namespace code_test_contacts_api.Application.IntegrationTests.TodoItems.Commands
         }
 
         [Test]
-        public async Task ShouldDeleteTodoItem()
+        public async Task ShouldDeletePhone()
         {
-            var listId = await SendAsync(new CreatePhoneCommand
+            var contactId = await SendAsync(new CreateContactCommand
             {
-                PhoneNumber = "New List"
+                Title = "Dr",
+                FirstName = "Bat",
+                LastName = "Man",
+    
             });
 
             var itemId = await SendAsync(new CreatePhoneCommand
             {
-                ContactId = listId,
-                PhoneNumber = "New Item"
+                ContactId = contactId,
+                PhoneNumber = "New phone number"
             });
 
             await SendAsync(new DeletePhoneCommand
@@ -39,7 +43,7 @@ namespace code_test_contacts_api.Application.IntegrationTests.TodoItems.Commands
                 Id = itemId
             });
 
-            var list = await FindAsync<Domain.Entities.Contact>(listId);
+            var list = await FindAsync<Phone>(itemId);
 
             list.Should().BeNull();
         }

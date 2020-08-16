@@ -6,12 +6,12 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/ContactLists": {
+    "/api/Contacts": {
       "get": {
         "tags": [
-          "ContactLists"
+          "Contacts"
         ],
-        "operationId": "ContactLists_Get",
+        "operationId": "Contacts_Get",
         "responses": {
           "200": {
             "description": "",
@@ -27,9 +27,9 @@
       },
       "post": {
         "tags": [
-          "ContactLists"
+          "Contacts"
         ],
-        "operationId": "ContactLists_Create",
+        "operationId": "Contacts_Create",
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -57,12 +57,12 @@
         }
       }
     },
-    "/api/ContactLists/{id}": {
+    "/api/Contacts/{id}": {
       "get": {
         "tags": [
-          "ContactLists"
+          "Contacts"
         ],
-        "operationId": "ContactLists_Get2",
+        "operationId": "Contacts_Get2",
         "parameters": [
           {
             "name": "id",
@@ -91,9 +91,9 @@
       },
       "put": {
         "tags": [
-          "ContactLists"
+          "Contacts"
         ],
-        "operationId": "ContactLists_Update",
+        "operationId": "Contacts_Update",
         "parameters": [
           {
             "name": "id",
@@ -134,9 +134,9 @@
       },
       "delete": {
         "tags": [
-          "ContactLists"
+          "Contacts"
         ],
-        "operationId": "ContactLists_Delete",
+        "operationId": "Contacts_Delete",
         "parameters": [
           {
             "name": "id",
@@ -615,20 +615,6 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
-          },
-          "phones": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/Phone"
-            }
-          },
-          "emails": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/Email"
-            }
           }
         }
       },
@@ -645,151 +631,6 @@
           1,
           2
         ]
-      },
-      "Phone": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/AuditableEntity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "id": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "phoneNumber": {
-                "type": "string",
-                "nullable": true
-              },
-              "contactId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "person": {
-                "nullable": true,
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/Contact"
-                  }
-                ]
-              }
-            }
-          }
-        ]
-      },
-      "Contact": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/AuditableEntity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "id": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "title": {
-                "type": "string",
-                "nullable": true
-              },
-              "firstName": {
-                "type": "string",
-                "nullable": true
-              },
-              "lastName": {
-                "type": "string",
-                "nullable": true
-              },
-              "note": {
-                "type": "string",
-                "nullable": true
-              },
-              "sex": {
-                "$ref": "#/components/schemas/Gender"
-              },
-              "dateOfBirth": {
-                "type": "string",
-                "format": "date-time",
-                "nullable": true
-              },
-              "phones": {
-                "type": "array",
-                "nullable": true,
-                "items": {
-                  "$ref": "#/components/schemas/Phone"
-                }
-              },
-              "emails": {
-                "type": "array",
-                "nullable": true,
-                "items": {
-                  "$ref": "#/components/schemas/Email"
-                }
-              }
-            }
-          }
-        ]
-      },
-      "Email": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/AuditableEntity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "id": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "emailAddress": {
-                "type": "string",
-                "nullable": true
-              },
-              "contactId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "person": {
-                "nullable": true,
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/Contact"
-                  }
-                ]
-              }
-            }
-          }
-        ]
-      },
-      "AuditableEntity": {
-        "type": "object",
-        "x-abstract": true,
-        "additionalProperties": false,
-        "properties": {
-          "createdBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "created": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "lastModifiedBy": {
-            "type": "string",
-            "nullable": true
-          },
-          "lastModified": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          }
-        }
       },
       "UpdateContactCommand": {
         "type": "object",

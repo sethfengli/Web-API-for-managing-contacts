@@ -11,7 +11,7 @@ namespace code_test_contacts_api.Application.IntegrationTests.Phones.Commands
 {
     using static Testing;
 
-    public class CreateTodoItemTests : TestBase
+    public class CreatePhoneTests : TestBase
     {
         [Test]
         public void ShouldRequireMinimumFields()
@@ -23,19 +23,22 @@ namespace code_test_contacts_api.Application.IntegrationTests.Phones.Commands
         }
 
         [Test]
-        public async Task ShouldCreateTodoItem()
+        public async Task ShouldCreatePhone()
         {
             var userId = await RunAsDefaultUserAsync();
 
-            var contactId = await SendAsync(new CreatePhoneCommand
+            var contactId = await SendAsync(new CreateContactCommand
             {
-                PhoneNumber = "1212121217"
+                Title = "Dr",
+                FirstName = "Bat",
+                LastName = "Man",
+            
             });
 
             var command = new CreatePhoneCommand
             {
                 ContactId = contactId,
-                PhoneNumber = "Tasks"
+                PhoneNumber = "1232344345"
             };
 
             var itemId = await SendAsync(command);

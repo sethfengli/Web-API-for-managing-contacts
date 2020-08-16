@@ -22,10 +22,6 @@ namespace code_test_contacts_api.Application.Contact.Commands
         public Gender Sex { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
-
-        public IList<Phone> Phones { get; private set; } 
-
-        public IList<Email> Emails { get; private set; } 
     }
 
     public class CreateContactCommandHandler : IRequestHandler<CreateContactCommand, int>
@@ -47,9 +43,7 @@ namespace code_test_contacts_api.Application.Contact.Commands
             entity.Note = request.Note;
             entity.Sex = request.Sex;
             entity.DateOfBirth = request.DateOfBirth;
-            entity.Phones = request.Phones;
-            entity.Emails = request.Emails;
-
+                   
             _context.Contacts.Add(entity);
 
             await _context.SaveChangesAsync(cancellationToken);

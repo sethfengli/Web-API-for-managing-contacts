@@ -29,7 +29,7 @@ namespace code_test_contacts_api.Application.Phones.Commands
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Contact), request.Id);
+                throw new NotFoundException(nameof(Phone), request.Id);
             }
 
             entity.PhoneNumber = request.PhoneNumber;

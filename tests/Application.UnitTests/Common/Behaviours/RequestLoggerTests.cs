@@ -32,7 +32,7 @@ namespace code_test_contacts_api.Application.UnitTests.Common.Behaviours
 
             var requestLogger = new LoggingBehaviour<CreatePhoneCommand>(_logger.Object, _currentUserService.Object, _identityService.Object);
 
-            await requestLogger.Process(new CreatePhoneCommand { ContactId = 1, PhoneNumber = "title" }, new CancellationToken());
+            await requestLogger.Process(new CreatePhoneCommand { ContactId = 1, PhoneNumber = "Test123" }, new CancellationToken());
 
             _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Once);
         }
@@ -42,7 +42,7 @@ namespace code_test_contacts_api.Application.UnitTests.Common.Behaviours
         {
             var requestLogger = new LoggingBehaviour<CreatePhoneCommand>(_logger.Object, _currentUserService.Object, _identityService.Object);
 
-            await requestLogger.Process(new CreatePhoneCommand { ContactId = 1, PhoneNumber = "title" }, new CancellationToken());
+            await requestLogger.Process(new CreatePhoneCommand { ContactId = 1, PhoneNumber = "122378" }, new CancellationToken());
 
             _identityService.Verify(i => i.GetUserNameAsync(null), Times.Never);
         }

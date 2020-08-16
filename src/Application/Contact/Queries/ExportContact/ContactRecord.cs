@@ -1,7 +1,9 @@
-﻿using code_test_contacts_api.Application.Common.Mappings;
+﻿using AutoMapper;
+using code_test_contacts_api.Application.Common.Mappings;
 using code_test_contacts_api.Domain.Entities;
 using code_test_contacts_api.Domain.Enums;
 using System;
+using System.Linq;
 
 namespace code_test_contacts_api.Application.Contact.Queries
 {
@@ -18,5 +20,11 @@ namespace code_test_contacts_api.Application.Contact.Queries
         public Gender Sex { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
+
+        public string Phones { get; set; }
+
+        public string Emails { get; set; }
+
+
     }
 }

@@ -6,11 +6,11 @@ using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 
-namespace code_test_contacts_api.Application.IntegrationTests.TodoLists.Commands
+namespace code_test_contacts_api.Application.IntegrationTests.Contact.Commands
 {
     using static Testing;
 
-    public class CreateTodoListTests : TestBase
+    public class CreateContactTests : TestBase
     {
         [Test]
         public void ShouldRequireMinimumFields()
@@ -21,31 +21,21 @@ namespace code_test_contacts_api.Application.IntegrationTests.TodoLists.Commands
                 SendAsync(command)).Should().Throw<ValidationException>();
         }
 
+       
         [Test]
-        public async Task ShouldRequireUniqueTitle()
-        {
-            await SendAsync(new CreateContactCommand
-            {
-                Title = "Shopping"
-            });
-
-            var command = new CreateContactCommand
-            {
-                Title = "Shopping"
-            };
-
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
-        }
-
-        [Test]
-        public async Task ShouldCreateTodoList()
+        public async Task ShouldCreateContact()
         {
             var userId = await RunAsDefaultUserAsync();
 
             var command = new CreateContactCommand
             {
-                Title = "Tasks"
+                Title = "Dr",
+                FirstName = "Bat",
+                LastName = "Man",
+                Note = "string",
+                Sex = 0,
+                DateOfBirth = DateTime.Parse("2020-08-15T10:27:37.863Z"),
+              
             };
 
             var id = await SendAsync(command);

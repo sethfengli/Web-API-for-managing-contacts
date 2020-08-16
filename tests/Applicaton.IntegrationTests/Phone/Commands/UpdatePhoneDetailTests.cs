@@ -2,24 +2,25 @@
 using code_test_contacts_api.Application.Phones.Commands;
 using code_test_contacts_api.Application.Contact.Commands;
 using code_test_contacts_api.Domain.Entities;
+using code_test_contacts_api.Domain.Enums;
 using FluentAssertions;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using System;
 
-namespace code_test_contacts_api.Application.IntegrationTests.TodoItems.Commands
+namespace code_test_contacts_api.Application.IntegrationTests.Phones.Commands
 {
     using static Testing;
 
-    public class UpdateTodoItemTests : TestBase
+    public class UpdatePhoneDetailTests : TestBase
     {
         [Test]
-        public void ShouldRequireValidTodoItemId()
+        public void ShouldRequireValidPhone()
         {
             var command = new UpdatePhoneCommand
             {
                 Id = 99,
-                PhoneNumber = "New Title"
+                PhoneNumber = "New phone"
             };
 
             FluentActions.Invoking(() =>
@@ -27,36 +28,39 @@ namespace code_test_contacts_api.Application.IntegrationTests.TodoItems.Commands
         }
 
         [Test]
-        public async Task ShouldUpdateTodoItem()
+        public async Task ShouldUpdatePhone()
         {
             var userId = await RunAsDefaultUserAsync();
 
-            var listId = await SendAsync(new CreateContactCommand
+            var contactId = await SendAsync(new CreateContactCommand
             {
-                Title = "New List"
+                Title = "Dr",
+                FirstName = "Bat",
+                LastName = "Man",
+               
             });
 
             var itemId = await SendAsync(new CreatePhoneCommand
             {
-                ContactId = listId,
-                PhoneNumber = "New Item"
+                ContactId = contactId,
+                PhoneNumber = "New phone numer11"
             });
 
-            var command = new UpdatePhoneCommand
+            var command = new UpdatePhoneDetailCommand
             {
                 Id = itemId,
-                PhoneNumber = "Updated Item Title"
+                ContactId = contactId,
+                PhoneNumber = "22222211",
+               
             };
 
             await SendAsync(command);
 
             var item = await FindAsync<Phone>(itemId);
 
+            item.ContactId.Should().Be(command.ContactId);
             item.PhoneNumber.Should().Be(command.PhoneNumber);
-            item.LastModifiedBy.Should().NotBeNull();
-            item.LastModifiedBy.Should().Be(userId);
-            item.LastModified.Should().NotBeNull();
-            item.LastModified.Should().BeCloseTo(DateTime.Now, 1000);
+
         }
     }
 }

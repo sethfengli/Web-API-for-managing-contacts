@@ -18,13 +18,16 @@ namespace code_test_contacts_api.Application.Contact.Commands
                 .MaximumLength(20).WithMessage("Title must not exceed 20 characters.");
 
             RuleFor(v => v.FirstName)
-                .NotEmpty().WithMessage("First name is required.")
+                .NotEmpty().When(v => string.IsNullOrEmpty(v.LastName)).WithMessage("*Either First Name or Last Name is required");
+
+            RuleFor(v => v.FirstName)
                 .MaximumLength(100).WithMessage("Title must not exceed 100 characters.");
 
             RuleFor(v => v.LastName)
-                .NotEmpty().WithMessage("Last name is required.")
-                .MaximumLength(100).WithMessage("Title must not exceed 100 characters.");
+                .NotEmpty().When(m => string.IsNullOrEmpty(m.FirstName)).WithMessage("*Either First Name or Last Name is required");
 
+            RuleFor(v => v.LastName)
+                .MaximumLength(100).WithMessage("Title must not exceed 100 characters.");
         }
 
     }
